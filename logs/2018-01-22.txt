@@ -1,0 +1,10 @@
+[22-Jan-2018 22:12:19 UTC] Uncaught exception: 'Exception' with message 'No route matched to products'
+Stack trace: #0 /Users/brandon/Dev/php-cms/public/index.php(55): Core\Router->dispatch('products')
+#1 /Users/brandon/.composer/vendor/laravel/valet/server.php(133): require('/Users/brandon/...')
+#2 {main}'
+Thrown in '/Users/brandon/Dev/php-cms/Core/Router.php' on line 130
+[22-Jan-2018 22:12:43 UTC] Uncaught exception: 'Exception' with message 'No route matched to updates'
+Stack trace: #0 /Users/brandon/Dev/php-cms/public/index.php(55): Core\Router->dispatch('updates')
+#1 /Users/brandon/.composer/vendor/laravel/valet/server.php(133): require('/Users/brandon/...')
+#2 {main}'
+Thrown in '/Users/brandon/Dev/php-cms/Core/Router.php' on line 130
