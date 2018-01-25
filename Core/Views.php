@@ -32,4 +32,11 @@ class Views {
 		}
 	}
 
+	public static function renderTemplate($view, $args = []) {
+		$loader = new \Twig_Loader_Filesystem(dirname(__DIR__) . '/App/Views');
+		$twig = new \Twig_Environment($loader);
+
+		echo $twig->render($view, $args);
+	}
+
 }
