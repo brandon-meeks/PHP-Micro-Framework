@@ -10,6 +10,7 @@
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
+                <li><a href="users/new">Signup</a></li>
             </ul>
         </nav>
     </header>
@@ -20,6 +21,16 @@
         {% block footer %}
         {% endblock %}
     </footer>
+
+    <script src="https://code.jquery.com/jquery-3.3.1.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.17.0/dist/jquery.validate.min.js"></script>
+    <script src="assets/js/hideShowPassword.min.js"></script>
+    <script src="/assets/js/scripts.js"></script>
+
+    <script>
+        {% block script %}
+        {% endblock %}
+    </script>
 
 </body>
 </html>

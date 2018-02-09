@@ -13,7 +13,7 @@ class Database {
 
 	public static function dbConnection() {
 		$host = '127.0.0.1';
-		$dbName = 'mvc';
+		$dbName = 'mvclogin';
 		$user = 'root';
 		$pass = '';
 
@@ -35,7 +35,7 @@ class Database {
 	public static function queryDb($statement) {
 		$conn = self::dbConnection();
 
-		$stmt = $conn->query($statement);
+		$stmt = $conn->prepare($statement);
 
 		$results = $stmt->fetchAll(\PDO::FETCH_ASSOC);
 		return $results;
