@@ -60,4 +60,14 @@ abstract class ApplicationController {
 
 	}
 
+	/**
+	 * Redirects the user to the new url
+	 *
+	 * @param string $url to redirect to
+	 */
+	public function redirect($url) {
+		header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
+		exit;
+	}
+
 }

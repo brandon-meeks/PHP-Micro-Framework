@@ -16,12 +16,15 @@ class User extends ApplicationController {
 
 	public $errors = [];
 
-	public function __construct($data) {
+	public function __construct($data = []) {
 		foreach ($data as $key => $value) {
 			$this->$key = $value;
 		}
 	}
 
+	/**
+	 * @return bool
+	 */
 	public function save() {
 
 		$this->validate();
@@ -47,6 +50,9 @@ class User extends ApplicationController {
 
 	}
 
+	/**
+	 * Validates the user's input
+	 */
 	protected function validate() {
 
 		if ($this->name == '') {
@@ -78,11 +84,23 @@ class User extends ApplicationController {
 	 *
 	 * Checks if the email entered already exists in the database
 	 *
-	 * @param $email The email address entered in the form
+	 * @param string $email The email address entered in the form
 	 *
 	 * @return bool True if the email exists, false otherwise
 	 */
-	protected function emailExists($email) {
+	public function emailExists($email) {
+		return self::findByEmail($email) !== false;
+	}
+
+	/**
+	 *
+	 * Search the database for the user using their email
+	 *
+	 * @param string $email The Email address of the user
+	 *
+	 * @return mixed
+	 */
+	public static function findByEmail($email) {
 		$query = 'SELECT * FROM users WHERE email = :email';
 
 		$db = Database::dbConnection();
@@ -90,9 +108,36 @@ class User extends ApplicationController {
 
 		$stmt->bindParam('email', $email, \PDO::PARAM_STR);
 
+		$stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+
 		$stmt->execute();
 
-		return $stmt->fetch() !== false;
+		return $stmt->fetch();
+	}
+
+	/**
+	 *
+	 * Authenticates the user by email and password
+	 *
+	 * @param string $email email address to authenticate
+	 * @param string $password password to authenticate
+	 *
+	 * @return mixed The user object or false if authentication fails
+	 */
+	public static function authenticate( $email, $password ) {
+
+		$user = self::findByEmail($email);
+
+		if ($user) {
+			// verifies the user's entered password against the stored password_hash in the db
+			if (password_verify($password, $user->password_hash)) {
+				return $user;
+				//echo "user found and logged in";
+			}
+		}
+
+		return false;
+
 	}
 
 }

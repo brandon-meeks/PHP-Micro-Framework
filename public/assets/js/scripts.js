@@ -32,5 +32,14 @@ $(document).ready(function() {
         },
         success: "valid"
     });
+
+    $('#loginForm').validate({
+        rules: {
+            email: {
+                required: true,
+                email: true
+            }
+        }
+    });
     $('#password').togglePassword(true);
 });

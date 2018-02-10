@@ -33,8 +33,7 @@ class Users extends ApplicationController {
 		$user = new User($_POST);
 
 		if ($user->save()) {
-			header('Location: http://' . $_SERVER['HTTP_HOST'] . '?users/success', true, 303);
-			exit;
+			$this->redirect('users/success');
 		} else {
 			Views::renderTemplate('users/new.html.twig', [ 'user' => $user ]);
 		}
