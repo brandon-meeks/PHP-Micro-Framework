@@ -59,4 +59,15 @@ class Sessions extends ApplicationController {
 
 	}
 
+	/**
+	 * Checks if session's user_id is set
+	 *
+	 * @return mixed The User model if logged in, null if not
+	 */
+	public static function getCurrentUser() {
+		if (isset($_SESSION['user_id'])) {
+			return User::findById($_SESSION['user_id']);
+		}
+	}
+
 }

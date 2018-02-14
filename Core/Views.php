@@ -37,6 +37,7 @@ class Views {
 		$twig = new \Twig_Environment($loader);
 		// adds sessions super global to twig
 		$twig->addGlobal('session', $_SESSION);
+		$twig->addGlobal('current_user', \App\Controllers\Sessions::getCurrentUser());
 
 		echo $twig->render($view, $args);
 	}

@@ -140,4 +140,26 @@ class User extends ApplicationController {
 
 	}
 
+	/**
+	 * Locate user in the database by their id
+	 *
+	 * @param int $id user id to search
+	 *
+	 * @return mixed
+	 */
+	public static function findById($id) {
+		$query = 'SELECT * FROM users WHERE id = :id';
+
+		$db = Database::dbConnection();
+		$stmt = $db->prepare($query);
+
+		$stmt->bindParam('id', $id, \PDO::PARAM_INT);
+
+		$stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+
+		$stmt->execute();
+
+		return $stmt->fetch();
+	}
+
 }

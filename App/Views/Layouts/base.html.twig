@@ -10,8 +10,8 @@
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
-                {% if session.user_id %}
-                    <li><a href="?logged_out">Logout</a></li>
+                {% if current_user %}
+                    <li>Welcome {{ current_user.name }} <a href="?logged_out">Logout</a></li>
                 {% else %}
                     <li><a href="?users/new">Signup</a></li>
                     <li><a href="?sessions/new">Login</a></li>
