@@ -35,6 +35,8 @@ class Views {
 	public static function renderTemplate($view, $args = []) {
 		$loader = new \Twig_Loader_Filesystem(dirname(__DIR__) . '/App/Views');
 		$twig = new \Twig_Environment($loader);
+		// adds sessions super global to twig
+		$twig->addGlobal('session', $_SESSION);
 
 		echo $twig->render($view, $args);
 	}

@@ -10,8 +10,12 @@
         <nav>
             <ul>
                 <li><a href="#">Home</a></li>
-                <li><a href="?users/new">Signup</a></li>
-                <li><a href="?sessions/new">Login</a></li>
+                {% if session.user_id %}
+                    <li><a href="?logged_out">Logout</a></li>
+                {% else %}
+                    <li><a href="?users/new">Signup</a></li>
+                    <li><a href="?sessions/new">Login</a></li>
+                {% endif %}
             </ul>
         </nav>
     </header>
