@@ -8,6 +8,7 @@
 
 namespace App\Controllers;
 
+use App\Flash;
 use App\Models\User;
 use Core\Views;
 
@@ -30,8 +31,12 @@ class Sessions extends ApplicationController {
 			// regenerates the session id
 			session_regenerate_id(true);
 
+			Flash::addMessage('You have successfully logged in', Flash::SUCCESS);
+
 			$this->redirect('/');
+
 		} else {
+			Flash::addMessage('Email or Password are incorrect. Please try again.', Flash::DANGER);
 			Views::renderTemplate('sessions/new.html.twig', ['email' => $_POST['email']]);
 		}
 

@@ -20,6 +20,15 @@
         </nav>
     </header>
 
+    <div>
+        <ul>
+            {% for message in flash_messages %}
+                <li class="{{ message.type }}">{{ message.body }}</li>
+            {% endfor %}
+        </ul>
+    </div>
+
+
     {% block content %} {% endblock %}
 
     <footer>

@@ -38,6 +38,7 @@ class Views {
 		// adds sessions super global to twig
 		$twig->addGlobal('session', $_SESSION);
 		$twig->addGlobal('current_user', \App\Controllers\Sessions::getCurrentUser());
+		$twig->addGlobal('flash_messages', \App\Flash::getMessages());
 
 		echo $twig->render($view, $args);
 	}

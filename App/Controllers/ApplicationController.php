@@ -31,6 +31,7 @@ abstract class ApplicationController {
 	 * @param array $args Arguments passed to the method
 	 *
 	 * @return void
+	 * @throws \Exception if method is not found in class
 	 */
 	public function __call( $name, $args ) {
 		$method = $name . 'Action';
@@ -69,5 +70,7 @@ abstract class ApplicationController {
 		header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
 		exit;
 	}
+
+
 
 }
