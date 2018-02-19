@@ -31,6 +31,7 @@ abstract class ApplicationController {
 	 * @param array $args Arguments passed to the method
 	 *
 	 * @return void
+	 * @throws \Exception if method is not found in class
 	 */
 	public function __call( $name, $args ) {
 		$method = $name . 'Action';
@@ -59,5 +60,17 @@ abstract class ApplicationController {
 	protected function after() {
 
 	}
+
+	/**
+	 * Redirects the user to the new url
+	 *
+	 * @param string $url to redirect to
+	 */
+	public function redirect($url) {
+		header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
+		exit;
+	}
+
+
 
 }
