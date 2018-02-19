@@ -11,6 +11,7 @@ namespace App\Controllers;
 
 use Core\Views;
 use App\Models\User;
+use App\Flash;
 
 class Users extends ApplicationController {
 
@@ -35,6 +36,7 @@ class Users extends ApplicationController {
 		if ($user->save()) {
 			$this->redirect('users/success');
 		} else {
+			Flash::addMessage('Unable to create user', Flash::DANGER);
 			Views::renderTemplate('users/new.html.twig', [ 'user' => $user ]);
 		}
 

@@ -12,10 +12,10 @@ namespace Core;
 class Database {
 
 	public static function dbConnection() {
-		$host = '127.0.0.1';
-		$dbName = 'mvclogin';
+		$host = 'localhost';
+		$dbName = 'php_mvc';
 		$user = 'root';
-		$pass = '';
+		$pass = 'Godfirst12!@';
 
 		try {
 			$conn = new \PDO( "mysql:host=$host;dbname=$dbName", $user, $pass );
