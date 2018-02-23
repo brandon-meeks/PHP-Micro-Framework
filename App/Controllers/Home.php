@@ -29,6 +29,7 @@ class Home extends ApplicationController {
 		Views::renderTemplate("Home/index.html.twig", [
 			'name' => 'Brandon'
 		]);
+
 	}
 
 }

@@ -15,7 +15,6 @@ set_exception_handler('Core\Error::exceptionHandler');
 // Sessions
 session_start();
 
-
 $router = new Core\Router();
 //
 // Add routes to Router
@@ -23,6 +22,7 @@ $router->add('', ['controller' => 'home', 'action' => 'index']);
 $router->add('posts', ['controller' => 'posts', 'action' => 'index']);
 $router->add('login', ['controller' => 'sessions', 'action' => 'create']);
 $router->add('logged_out', ['controller' => 'sessions', 'action' => 'destroy']);
+$router->add('users/resetPassword/{token:[\da-f]+}', ['controller' => 'users', 'action' => 'resetPassword']);
 //$router->add('posts', ['namespace' => 'Post']);
 $router->add('{controller}/{action}');
 $router->add('{controller}/{id:\d+}/{action}');
