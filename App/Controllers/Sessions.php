@@ -25,7 +25,10 @@ class Sessions extends ApplicationController {
 
 		$user = User::authenticate($_POST['email'], $_POST['password']);
 
-		if ($user) {
+		if($user->is_active == 0) {
+			Flash::addMessage('User must be activated.', Flash::DANGER);
+			$this->redirect('/');
+		} elseif ($user) {
 			// assigns user_id to the session
 			$_SESSION['user_id'] = $user->id;
 			// regenerates the session id
