@@ -9,10 +9,12 @@
 namespace App\Models;
 
 use Core\Database;
+use Core\Token;
+use Core\Mailer;
+use Core\Views;
 
-use App\Controllers\ApplicationController;
 
-class User extends ApplicationController {
+class User {
 
 	public $errors = [];
 
@@ -62,7 +64,7 @@ class User extends ApplicationController {
 		if (filter_var($this->email, FILTER_VALIDATE_EMAIL) === false) {
 			$this->errors[] = 'Please enter a valid email';
 		}
-		if ($this->emailExists($this->email)) {
+		if ($this->emailExists($this->email, $this->id ?? null)) {
 			$this->errors[] = 'Email is already used';
 		}
 
@@ -88,8 +90,17 @@ class User extends ApplicationController {
 	 *
 	 * @return bool True if the email exists, false otherwise
 	 */
-	public function emailExists($email) {
-		return self::findByEmail($email) !== false;
+	public function emailExists($email, $ignore_id = null) {
+
+		$user = self::findByEmail($email);
+
+		if ($user) {
+			if ($user->id != $ignore_id) {
+				return true;
+			}
+		}
+		return false;
+
 	}
 
 	/**
@@ -160,6 +171,129 @@ class User extends ApplicationController {
 		$stmt->execute();
 
 		return $stmt->fetch();
+	}
+
+	/**
+	 * Send password reset email to the specified user
+	 *
+	 * @param $email The email address
+	 *
+	 * @throws \Exception
+	 */
+	public static function sendPasswordReset( $email ) {
+
+		$user = self::findByEmail($email);
+
+		if ($user) {
+			if ($user->createPasswordResetToken()) {
+				$user->sendPasswordResetEmail();
+			};
+		}
+	}
+
+	/**
+	 * Create a new password reset token and expiry
+	 *
+	 * @return bool
+	 * @throws \Exception
+	 */
+	protected function createPasswordResetToken() {
+		$token = new Token();
+		$hashed_token = $token->getHash();
+		$this->password_reset_token = $token->getToken();
+
+		$password_exp = time() + 60 * 60 * 2; // 2 hours from now
+
+		$query = 'UPDATE users 
+				  SET password_reset_hash = :token_hash, 
+				  	  password_hash_exp = :expires_at 
+				  WHERE id = :id';
+
+		$db = Database::dbConnection();
+		$stmt = $db->prepare($query);
+
+		$stmt->bindValue(':token_hash', $hashed_token, \PDO::PARAM_STR);
+		$stmt->bindValue(':expires_at', date('Y-m-d H:i:s', $password_exp), \PDO::PARAM_STR);
+		$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+
+		return $stmt->execute();
+
+	}
+
+	/**
+	 *
+	 */
+	protected function sendPasswordResetEmail() {
+		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/?users/resetPassword/' . $this->password_reset_token;
+
+		$text = Views::getTemplate('mailer/password_reset.html.twig', ['url' => $url]);
+		$html = Views::getTemplate('mailer/password_reset.html.twig', ['url' => $url]);
+
+		Mailer::sendMail($this->email, 'Password Reset Request', $text, $html);
+	}
+
+	/**
+	 * @param $token
+	 *
+	 * @return mixed
+	 * @throws \Exception
+	 */
+	public static function findByPasswordResetHash($token) {
+		$token = new Token($token);
+		$hashed_token = $token->getHash();
+
+		$sql = 'SELECT * FROM users
+                WHERE password_reset_hash = :token_hash';
+
+		$db = Database::dbConnection();
+		$stmt = $db->prepare($sql);
+
+		$stmt->bindValue(':token_hash', $hashed_token, \PDO::PARAM_STR);
+
+		$stmt->setFetchMode(\PDO::FETCH_CLASS, get_called_class());
+
+		$stmt->execute();
+
+		$user = $stmt->fetch();
+
+		if ($user) {
+			// Check password reset token hasn't expired
+			if (strtotime($user->password_hash_exp) > time()) {
+				return $user;
+			}
+		}
+	}
+
+	/**
+	 * @param string $password
+	 *
+	 * @return bool
+	 */
+	public function updatePassword($password) {
+		$this->password = $password;
+
+		$this->validate();
+
+		if (empty($this->errors)) {
+			$password_hash = password_hash($this->password, PASSWORD_DEFAULT);
+
+			$query = 'UPDATE users 
+					  SET password_hash = :password_hash,
+					  password_reset_hash = NULL,
+					  password_hash_exp = NULL
+					  WHERE id = :id';
+
+			$db = Database::dbConnection();
+			$stmt = $db->prepare($query);
+
+			$stmt->bindValue(':password_hash', $password_hash, \PDO::PARAM_STR);
+			$stmt->bindValue(':id', $this->id, \PDO::PARAM_INT);
+
+			return $stmt->execute();
+		}
+
+		return false;
+
 	}
 
 }
