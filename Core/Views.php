@@ -32,11 +32,38 @@ class Views {
 		}
 	}
 
+	/**
+	 * @param $view
+	 * @param array $args
+	 *
+	 * @throws \Twig_Error_Loader
+	 * @throws \Twig_Error_Runtime
+	 * @throws \Twig_Error_Syntax
+	 */
 	public static function renderTemplate($view, $args = []) {
+		echo self::getTemplate($view, $args);
+	}
+
+	/**
+	 * Get the contents of a view template
+	 *
+	 * @param string $view The template file
+	 * @param array $args Associative array of data to pass to the view (optional)
+	 *
+	 * @return string
+	 * @throws \Twig_Error_Loader
+	 * @throws \Twig_Error_Runtime
+	 * @throws \Twig_Error_Syntax
+	 */
+	public static function getTemplate($view, $args = []) {
 		$loader = new \Twig_Loader_Filesystem(dirname(__DIR__) . '/App/Views');
 		$twig = new \Twig_Environment($loader);
+		// adds sessions super global to twig
+		$twig->addGlobal('session', $_SESSION);
+		$twig->addGlobal('current_user', \App\Controllers\Sessions::getCurrentUser());
+		$twig->addGlobal('flash_messages', \App\Flash::getMessages());
 
-		echo $twig->render($view, $args);
+		return $twig->render($view, $args);
 	}
 
 }

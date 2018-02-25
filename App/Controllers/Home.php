@@ -26,9 +26,8 @@ class Home extends ApplicationController {
 	 */
 	public function indexAction() {
 		//echo "This is the Home Controller's Index method";
-		Views::renderTemplate("Home/index.html.twig", [
-			'name' => 'Brandon'
-		]);
+		Views::renderTemplate("Home/index.html.twig");
+
 	}
 
 }

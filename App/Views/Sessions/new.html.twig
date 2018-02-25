@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block content %}
+
+    <form action="?sessions/create" method="post" id="loginForm">
+        <div>
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="{{ email }}">
+        </div>
+        <div>
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password">
+        </div>
+        <div>
+            <button type="submit">Submit</button>
+        </div>
+        <div>
+            <a href="?users/forgotPassword">Forgot Password</a>
+        </div>
+    </form>
+
+{% endblock %}
+
+{% block script %}
+    $(document).ready(function() {
+        $('#loginForm').validate({
+            rules: {
+                email: {
+                    required: true,
+                    email: true
+                }
+            }
+        });
+    })
+{% endblock %}
