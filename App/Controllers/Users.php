@@ -34,6 +34,7 @@ class Users extends ApplicationController {
 		$user = new User($_POST);
 
 		if ($user->save()) {
+			$user->sendActivationEmail();
 			$this->redirect('users/success');
 		} else {
 			Flash::addMessage('Unable to create user', Flash::DANGER);
@@ -107,6 +108,15 @@ class Users extends ApplicationController {
 				'email' => $user->email
 			]);
 		}
+	}
+
+	public function activate() {
+		User::activateUser($this->route_params['token']);
+		$this->redirect('?users/activationComplete');
+	}
+
+	public function activationComplete() {
+		Views::renderTemplate('users/activation.html.twig');
 	}
 
 }

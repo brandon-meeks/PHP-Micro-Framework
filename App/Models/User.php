@@ -32,10 +32,13 @@ class User {
 		$this->validate();
 
 		if (empty($this->errors)) {
+			$token = new Token();
+			$activation_hash = $token->getHash();
+			$this->activation_token = $token->getToken();
 
 			$password_hash = password_hash( $this->password, PASSWORD_DEFAULT );
 
-			$query = 'INSERT INTO users (name, email, password_hash) VALUES (:name, :email, :password_hash)';
+			$query = 'INSERT INTO users (name, email, password_hash, activation_hash) VALUES (:name, :email, :password_hash, :activation_hash)';
 
 			$db   = Database::dbConnection();
 			$stmt = $db->prepare($query);
@@ -43,6 +46,7 @@ class User {
 			$stmt->bindValue( 'name', $this->name, \PDO::PARAM_STR );
 			$stmt->bindValue( 'email', $this->email, \PDO::PARAM_STR );
 			$stmt->bindValue( 'password_hash', $password_hash, \PDO::PARAM_STR );
+			$stmt->bindValue('activation_hash', $activation_hash, \PDO::PARAM_STR);
 
 
 			return $stmt->execute();
@@ -293,6 +297,33 @@ class User {
 		}
 
 		return false;
+
+	}
+
+	public function sendActivationEmail() {
+		$url = 'http://' . $_SERVER['HTTP_HOST'] . '/?users/activate/' . $this->activation_token;
+
+		$text = Views::getTemplate('mailer/account_activation.html.twig', ['url' => $url]);
+		$html = Views::getTemplate('mailer/account_activation.html.twig', ['url' => $url]);
+
+		Mailer::sendMail($this->email, 'User Account Activation', $text, $html);
+	}
+
+	public static function activateUser($token) {
+		$token = new Token($token);
+		$hashed_token = $token->getHash();
+
+		$sql = 'UPDATE users
+				SET is_active = 1,
+				activation_hash = NULL
+				WHERE activation_hash = :hashed_token';
+
+		$db = Database::dbConnection();
+		$stmt = $db->prepare($sql);
+
+		$stmt->bindValue(':hashed_token', $hashed_token, \PDO::PARAM_STR);
+
+		return $stmt->execute();
 
 	}
 
