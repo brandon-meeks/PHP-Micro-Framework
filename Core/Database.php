@@ -8,14 +8,16 @@
 
 namespace Core;
 
+use \App\Config;
+
 
 class Database {
 
 	public static function dbConnection() {
-		$host = 'localhost';
-		$dbName = 'php_mvc';
-		$user = 'root';
-		$pass = 'Godfirst12!@';
+		$host = Config::DB_HOST;
+		$dbName = Config::DB_Name;
+		$user = Config::DB_USER;
+		$pass = Config::DB_PASS;
 
 		try {
 			$conn = new \PDO( "mysql:host=$host;dbname=$dbName", $user, $pass );
