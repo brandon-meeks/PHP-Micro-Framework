@@ -8,12 +8,23 @@ class Config {
 	 * @var boolean
 	 */
 	const SHOW_ERRORS = true;
+	
+	/*
+	* Database Credentials
+	*/
+	const DB_HOST = 'Your Host';
+	
+	const DB_NAME = 'Database Name';
+	
+	const DB_USER = 'DB Username';
+	
+	const DB_PASS = 'DB User Password';
 
 	/*
 	 * API Key for your Mailgun account
 	 * @var string
 	 */
-	const MAILGUN_API_KEY = 'key-09fa4e019e12218dba37255c2c9b51db';
+	const MAILGUN_API_KEY = 'Your API Key';
 
 	/*
 	 * Website email Address to be used when sending email
@@ -25,7 +36,7 @@ class Config {
 	 * Domain configured in Mailgun for sending email
 	 * @var string
 	 */
-	const EMAIL_DOMAIN = 'sandbox747000d4ef80455b8397f99224337624.mailgun.org';
+	const EMAIL_DOMAIN = 'Your domain';
 
 	/*
 	 * Secret key for hashing
